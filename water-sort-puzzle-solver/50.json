@@ -1,0 +1,15 @@
+{
+    "bottles": [
+        ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
+        ["EMPTY", "EMPTY", "EMPTY", "EMPTY"],
+        ["DARK_GREEN", "LIGHT_BLUE", "LIGHT_BLUE", "BROWN"],
+        ["GREEN", "GREEN", "RED", "LIGHT_BLUE"],
+        ["BROWN", "BLUE", "PURPLE", "DARK_GREEN"],
+        ["RED", "YELLOW", "PURPLE", "ORANGE"],
+        ["RED", "PURPLE", "PURPLE", "ORANGE"],
+        ["BLUE", "BLUE", "ORANGE", "RED"],
+        ["GREEN", "ORANGE", "BROWN", "DARK_GREEN"],
+        ["GREEN", "YELLOW", "BROWN", "YELLOW"],
+        ["BLUE", "LIGHT_BLUE", "DARK_GREEN", "YELLOW"]
+    ]
+}
