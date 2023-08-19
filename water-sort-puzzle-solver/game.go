@@ -18,14 +18,14 @@ type Game struct {
 
 type Flow struct {
 	Bottles bottlesArray
-	Moves []string
+	Moves   []string
 }
 
 func newFlow(bottles bottlesArray) Flow {
 	moves := make([]string, 0)
 
 	return Flow{
-		Moves: moves,
+		Moves:   moves,
 		Bottles: bottles,
 	}
 }
@@ -38,8 +38,8 @@ func (game Game) solve() Flow {
 	var solvedState Flow
 
 	for len(queueState) != 0 {
-		currentState := queueState[len(queueState) - 1]
-		queueState = queueState[:len(queueState) - 1]
+		currentState := queueState[len(queueState)-1]
+		queueState = queueState[:len(queueState)-1]
 
 		if visited[hashBottles(currentState.Bottles)] {
 			continue
@@ -66,7 +66,7 @@ func (game Game) solve() Flow {
 
 				bottle2 := currentState.Bottles[j]
 
-				if bottle2[len(bottle2) - 1] != EMPTY {
+				if bottle2[len(bottle2)-1] != EMPTY {
 					continue
 				}
 
@@ -76,7 +76,8 @@ func (game Game) solve() Flow {
 					flow := newFlow(getCopyOfSituation(cs))
 					newMovesArr := make([]string, len(currentState.Moves))
 					copy(newMovesArr, currentState.Moves)
-					flow.Moves = append(newMovesArr, strconv.Itoa(i) + " -> " + strconv.Itoa(j))
+					//Make index start from 1 in the path record
+					flow.Moves = append(newMovesArr, strconv.Itoa(i+1)+" -> "+strconv.Itoa(j+1))
 
 					if !isAlreadySolved(queueState, cs) {
 						queueState = append(queueState, flow)
