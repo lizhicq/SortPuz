@@ -76,7 +76,7 @@ func (game Game) solve() Flow {
 					flow := newFlow(getCopyOfSituation(cs))
 					newMovesArr := make([]string, len(currentState.Moves))
 					copy(newMovesArr, currentState.Moves)
-					//Make index start from 1 in the path record
+					//Make index start from 1
 					flow.Moves = append(newMovesArr, strconv.Itoa(i+1)+" -> "+strconv.Itoa(j+1))
 
 					if !isAlreadySolved(queueState, cs) {
@@ -133,7 +133,7 @@ func isAlreadySolved(solutions []Flow, bottles bottlesArray) bool {
 func hashBottles(bottles bottlesArray) string {
 	var b bytes.Buffer
 	gob.NewEncoder(&b).Encode(bottles)
-	return string(b.Bytes())
+	return b.String()
 }
 
 func makeMove(currentSituation *bottlesArray, i, j int) {
@@ -210,7 +210,7 @@ func isDone(bottles bottlesArray) bool {
 			previousColor = color
 		}
 
-		if isDone == false {
+		if !isDone {
 			break
 		}
 	}
