@@ -4,7 +4,7 @@ from game import NewGame
 
 def main():
     parser = argparse.ArgumentParser(description="Specify the mapping file you want to solve")
-    parser.add_argument("--file", default="data/130.json", help="--file data/130.json")
+    parser.add_argument("--file", default="data/139.json", help="--file data/130.json")
     args = parser.parse_args()
 
     start_date = time.time()

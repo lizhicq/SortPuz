@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"os"
 	"strconv"
+	"strings"
 )
 
 const EMPTY = "EMPTY"
@@ -47,6 +50,20 @@ func (game Game) solve() Flow {
 
 		visited[hashBottles(currentState.Bottles)] = true
 
+		file, err := os.OpenFile("output.go.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			fmt.Println("Error opening file:", err)
+			break
+		}
+		defer file.Close()
+
+		moves := strings.Join(currentState.Moves, " ")
+
+		_, err = fmt.Fprintln(file, moves)
+		if err != nil {
+			fmt.Println("Error writing to file:", err)
+		}
+
 		if isDone(currentState.Bottles) {
 			solvedState = currentState
 			break
@@ -77,7 +94,7 @@ func (game Game) solve() Flow {
 					newMovesArr := make([]string, len(currentState.Moves))
 					copy(newMovesArr, currentState.Moves)
 					//Make index start from 1
-					flow.Moves = append(newMovesArr, strconv.Itoa(i+1)+" -> "+strconv.Itoa(j+1))
+					flow.Moves = append(newMovesArr, strconv.Itoa(i)+" -> "+strconv.Itoa(j))
 
 					if !isAlreadySolved(queueState, cs) {
 						queueState = append(queueState, flow)
@@ -151,6 +168,24 @@ func makeMove(currentSituation *bottlesArray, i, j int) {
 func isMovePossible(bottle1, bottle2 []string) bool {
 	topColorBottle1, _ := getTopColorOfBottle(bottle1)
 	topColorBottle2, _ := getTopColorOfBottle(bottle2)
+
+	emptySpacesBottle2 := 0
+	for i := 0; i < len(bottle2); i++ {
+		if bottle2[i] == EMPTY {
+			emptySpacesBottle2++
+		}
+	}
+
+	liquidBottle1 := 0
+	for i := 0; i < len(bottle1); i++ {
+		if bottle1[i] == topColorBottle1 {
+			liquidBottle1++
+		}
+	}
+
+	if liquidBottle1 > emptySpacesBottle2 {
+		return false
+	}
 
 	if bottle2[len(bottle2)-1] != EMPTY {
 		return false

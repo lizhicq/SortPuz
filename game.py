@@ -45,7 +45,7 @@ class Game:
                         cs = get_copy_of_situation(current_state.bottles)
                         make_move(cs, i, j)
                         flow = Flow(bottles=get_copy_of_situation(cs), moves=current_state.moves.copy())
-                        flow.moves.append(f"{i+1} -> {j+1}")
+                        flow.moves.append(f"{i} -> {j}")
 
                         if not is_already_solved(queue_state, cs):
                             queue_state.append(flow)
@@ -68,7 +68,15 @@ def NewGame(filename: str) -> Game:
 # Function to check if a bottle is done
 def is_bottle_done(bottle: List[str]) -> bool:
     color = bottle[0]
-    return all(color == b_color or b_color == 'EMPTY' for b_color in bottle[1:])
+
+    if color == 'EMPTY':
+        return False
+
+    for b_color in bottle[1:]:
+        if b_color != color:
+            return False
+
+    return True
 
 # Function to get a copy of the situation
 def get_copy_of_situation(situation: BottlesArray) -> BottlesArray:
@@ -91,11 +99,23 @@ def make_move(current_situation: BottlesArray, i: int, j: int) -> None:
 def is_move_possible(bottle1: List[str], bottle2: List[str]) -> bool:
     top_color_bottle1, _ = get_top_color_of_bottle(bottle1)
     top_color_bottle2, _ = get_top_color_of_bottle(bottle2)
-    return (
-        bottle2[-1] == 'EMPTY'
-        and not (top_color_bottle1 == bottle1[0] and bottle2[0] == 'EMPTY')
-        and not (top_color_bottle1 != top_color_bottle2 and top_color_bottle2 != 'EMPTY')
-    )
+
+    empty_spaces_bottle2 = sum(1 for x in bottle2 if x == "EMPTY")
+    liquid_bottle1 = sum(1 for x in bottle1 if x == top_color_bottle1)
+
+    if liquid_bottle1 > empty_spaces_bottle2:
+        return False
+
+    if bottle2[-1] != "EMPTY":
+        return False
+
+    if top_color_bottle1 == bottle1[0] and bottle2[0] == "EMPTY":
+        return False
+
+    if top_color_bottle1 != top_color_bottle2 and top_color_bottle2 != "EMPTY":
+        return False
+
+    return True
 
 # Function to get the bottom empty place of a bottle
 def get_bottom_empty_place(bottle: List[str]) -> int:
@@ -109,8 +129,24 @@ def get_top_color_of_bottle(bottle: List[str]) -> Tuple[str, int]:
     return 'EMPTY', -1
 
 # Function to check if the game is done
-def is_done(bottles: BottlesArray) -> bool:
-    return all(is_bottle_done(bottle) for bottle in bottles)
+def is_done(bottles: List[List[str]]) -> bool:
+    is_done = True
+    for bottle in bottles:
+        previous_color = ""
+        for color in bottle:
+            if previous_color == "":
+                previous_color = color
+                continue
+            if color != previous_color:
+                is_done = False
+                break
+            previous_color = color
+
+        if not is_done:
+            break
+
+    return is_done
+
 
 # Function to create a new Game from a file
 def NewGame(filename: str) -> Game:
